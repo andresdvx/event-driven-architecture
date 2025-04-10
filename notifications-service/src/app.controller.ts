@@ -1,12 +1,20 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Logger } from '@nestjs/common';
+import { Ctx, KafkaContext, MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  private readonly logger = new Logger('Notifications-Consumer');
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @MessagePattern('user-created')
+  handleUserCreated(@Payload() message: any, @Ctx() context: KafkaContext) {
+    try {
+      const { event, data } = message;
+      this.logger.debug('Message received from Kafka - Topic: ', context.getTopic());
+      if (event === 'user.created') {
+        console.log('User Created:', data);
+      }
+    } catch (error) {
+      this.logger.error('Error Processing Message ', error);
+    }
   }
 }

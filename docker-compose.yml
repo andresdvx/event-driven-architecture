@@ -33,6 +33,17 @@ services:
       - "19000:9000"
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
+
+  # users-service:
+  #   build: ./users-service
+  #   networks:
+  #     - broker-kafka
+  #   ports: 
+  #     - "3000:3000"
+  #   depends_on:
+  #     - kafka
+  #   environment:
+  #     KAFKA_BROKER: kafka:29092
       
 networks:
   broker-kafka:
